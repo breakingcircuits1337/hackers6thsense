@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard - pfSense AI Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .navbar {
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .container-main {
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            background: white;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-card h5 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .stat-card p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .agent-category {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .btn-execute {
+            background: var(--success-color);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-execute:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+            color: white;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #ecf0f1;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            color: #7f8c8d;
+            border: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-link.active {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            background: none;
+        }
+
+        .filter-chip {
+            display: inline-block;
+            background: #ecf0f1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-chip:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .filter-chip.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .modal-header {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .container-main {
+                margin: 15px auto;
+            }
+
+            .agent-card {
+                padding: 15px;
+            }
+
+            .stat-card h5 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-robot"></i> pfSense AI Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-microscope"></i> Agents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="scheduler-dashboard.html"><i class="fas fa-calendar-check"></i> Scheduler</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-main">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1><i class="fas fa-microscope"></i> Agent Control Panel</h1>
+                <p class="text-muted">Manage and execute 50 MITRE ATT&CK framework agents</p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card">
+                    <h5 id="totalAgents">50</h5>
+                    <p>Total Agents</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);">
+                    <h5 id="activeAgents">0</h5>
+                    <p>Currently Running</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--warning-color) 0%, #e67e22 100%);">
+                    <h5 id="totalExecutions">0</h5>
+                    <p>Total Executions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+                    <h5 id="successRate">0%</h5>
+                    <p>Success Rate</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#agents">
+                        <i class="fas fa-list"></i> All Agents
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#execution">
+                        <i class="fas fa-play"></i> Execution Console
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#results">
+                        <i class="fas fa-results"></i> Results
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" style="padding: 30px 20px;">
+                <!-- Agents Tab -->
+                <div id="agents" class="tab-pane fade show active">
+                    <div class="mb-3">
+                        <label class="form-label">Filter by Category:</label>
+                        <div id="categoryFilters"></div>
+                    </div>
+
+                    <div class="row" id="agentsContainer">
+                        <div class="col-12 text-center text-muted" style="padding: 40px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2em;"></i>
+                            <p>Loading agents...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Tab -->
+                <div id="execution" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Single Agent Execution</h5>
+                            <div class="form-group">
+                                <label class="form-label">Select Agent</label>
+                                <select class="form-control" id="singleAgentSelect">
+                                    <option>Loading agents...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Configuration (JSON)</label>
+                                <textarea class="form-control" id="singleAgentConfig" rows="4" placeholder="{}"></textarea>
+                            </div>
+                            <button class="btn btn-success btn-lg" id="executeSingleBtn">
+                                <i class="fas fa-play"></i> Execute Agent
+                            </button>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Batch Execution</h5>
+                            <div class="form-group">
+                                <label class="form-label">Select Agents (Hold Ctrl)</label>
+                                <select class="form-control" id="batchAgentSelect" multiple style="height: 150px;">
+                                    <option>Loading agents...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Configuration (JSON)</label>
+                                <textarea class="form-control" id="batchAgentConfig" rows="4" placeholder="{}"></textarea>
+                            </div>
+                            <button class="btn btn-success btn-lg" id="executeBatchBtn">
+                                <i class="fas fa-play"></i> Execute Batch
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="executionOutput" style="margin-top: 30px; display: none;">
+                        <h5>Execution Output</h5>
+                        <div style="background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto;" id="outputText"></div>
+                    </div>
+                </div>
+
+                <!-- Results Tab -->
+                <div id="results" class="tab-pane fade">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Results from the last 20 executions
+                    </div>
+                    <div id="resultsContainer">
+                        <p class="text-muted text-center">No results yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+        const API_URL = '/api';
+        const AUTH_TOKEN = localStorage.getItem('auth_token') || 'demo-token';
+
+        const apiClient = axios.create({
+            baseURL: API_URL,
+            headers: {
+                'Authorization': `Bearer ${AUTH_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        let allAgents = [];
+        let agentsByCategory = {};
+
+        // Load agents
+        async function loadAgents() {
+            try {
+                const response = await apiClient.get('/agents');
+                allAgents = response.data.data || [];
+
+                // Group by category
+                agentsByCategory = {};
+                allAgents.forEach(agent => {
+                    const category = agent.category || 'unknown';
+                    if (!agentsByCategory[category]) {
+                        agentsByCategory[category] = [];
+                    }
+                    agentsByCategory[category].push(agent);
+                });
+
+                displayAgents(allAgents);
+                createCategoryFilters();
+                populateAgentSelects();
+                updateStatistics();
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                document.getElementById('agentsContainer').innerHTML = '<div class="col-12 alert alert-danger">Error loading agents</div>';
+            }
+        }
+
+        // Display agents
+        function displayAgents(agents) {
+            const container = document.getElementById('agentsContainer');
+            container.innerHTML = '';
+
+            if (agents.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted" style="padding: 40px;">No agents found</div>';
+                return;
+            }
+
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4';
+                card.innerHTML = `
+                    <div class="agent-card">
+                        <div class="agent-category">${agent.category}</div>
+                        <h6 style="margin-bottom: 5px;">${agent.name}</h6>
+                        <small class="text-muted">${agent.id}</small>
+                        <p style="margin-top: 10px; margin-bottom: 15px; font-size: 0.9em;">${agent.description}</p>
+                        <button class="btn-execute" onclick="executeAgent('${agent.id}')">
+                            <i class="fas fa-play"></i> Execute
+                        </button>
+                        <button class="btn-execute" style="background: #95a5a6; margin-left: 5px;" onclick="viewAgentDetails('${agent.id}')">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Create category filters
+        function createCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '';
+
+            const allCategory = document.createElement('span');
+            allCategory.className = 'filter-chip active';
+            allCategory.textContent = 'All Agents (' + allAgents.length + ')';
+            allCategory.onclick = () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                allCategory.classList.add('active');
+                displayAgents(allAgents);
+            };
+            container.appendChild(allCategory);
+
+            Object.keys(agentsByCategory).sort().forEach(category => {
+                const chip = document.createElement('span');
+                chip.className = 'filter-chip';
+                chip.textContent = category + ' (' + agentsByCategory[category].length + ')';
+                chip.onclick = () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    displayAgents(agentsByCategory[category]);
+                };
+                container.appendChild(chip);
+            });
+        }
+
+        // Populate agent selects
+        function populateAgentSelects() {
+            const single = document.getElementById('singleAgentSelect');
+            const batch = document.getElementById('batchAgentSelect');
+
+            single.innerHTML = '';
+            batch.innerHTML = '';
+
+            allAgents.forEach(agent => {
+                const option1 = document.createElement('option');
+                option1.value = agent.id;
+                option1.textContent = agent.name + ' (' + agent.category + ')';
+                single.appendChild(option1);
+
+                const option2 = option1.cloneNode(true);
+                batch.appendChild(option2);
+            });
+        }
+
+        // Execute single agent
+        document.getElementById('executeSingleBtn')?.addEventListener('click', async () => {
+            const agentId = document.getElementById('singleAgentSelect').value;
+            const config = JSON.parse(document.getElementById('singleAgentConfig').value || '{}');
+
+            try {
+                const response = await apiClient.post(`/agents/${agentId}/execute`, { config });
+                showExecutionOutput('Agent executed successfully\n' + JSON.stringify(response.data, null, 2));
+            } catch (error) {
+                showExecutionOutput('Error executing agent:\n' + error.message);
+            }
+        });
+
+        // Execute batch
+        document.getElementById('executeBatchBtn')?.addEventListener('click', async () => {
+            const selected = Array.from(document.getElementById('batchAgentSelect').selectedOptions).map(o => o.value);
+            const config = JSON.parse(document.getElementById('batchAgentConfig').value || '{}');
+
+            if (!selected.length) {
+                alert('Please select at least one agent');
+                return;
+            }
+
+            try {
+                const response = await apiClient.post('/agents/batch/execute', { agent_ids: selected, config });
+                showExecutionOutput('Batch execution started\n' + JSON.stringify(response.data, null, 2));
+            } catch (error) {
+                showExecutionOutput('Error executing batch:\n' + error.message);
+            }
+        });
+
+        // Show execution output
+        function showExecutionOutput(output) {
+            const container = document.getElementById('executionOutput');
+            const text = document.getElementById('outputText');
+            text.textContent = output;
+            container.style.display = 'block';
+        }
+
+        // Execute agent
+        async function executeAgent(agentId) {
+            try {
+                const response = await apiClient.post(`/agents/${agentId}/execute`, {});
+                alert('Agent ' + agentId + ' executed (ID: ' + response.data.data.execution_id + ')');
+            } catch (error) {
+                alert('Error executing agent: ' + error.message);
+            }
+        }
+
+        // Update statistics
+        async function updateStatistics() {
+            try {
+                const response = await apiClient.get('/agents/stats');
+                const stats = response.data.data;
+                document.getElementById('totalAgents').textContent = stats.total_agents;
+                document.getElementById('activeAgents').textContent = 0; // Would fetch from database
+                document.getElementById('totalExecutions').textContent = stats.total_executions;
+                document.getElementById('successRate').textContent = stats.success_rate.toFixed(1) + '%';
+            } catch (error) {
+                console.error('Error updating statistics:', error);
+            }
+        }
+
+        // Initialize
+        loadAgents();
+        setInterval(updateStatistics, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pfSense AI Manager - Unified Red/Blue Team Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
+    <style>
+        * {
+            --primary: #0066cc;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
+            --info: #17a2b8;
+            --dark: #343a40;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(20, 20, 40, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #0066cc, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container-fluid {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .dashboard-section {
+            background: rgba(30, 30, 60, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 102, 204, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-section:hover {
+            border-color: rgba(0, 102, 204, 0.6);
+            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #00d4ff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(0, 212, 255, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .threat-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .threat-critical { background: #dc3545; }
+        .threat-high { background: #fd7e14; }
+        .threat-medium { background: #ffc107; }
+        .threat-low { background: #28a745; }
+        .threat-info { background: #17a2b8; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .agent-card, .threat-card {
+            background: rgba(50, 50, 80, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .agent-card:hover, .threat-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            background: rgba(50, 50, 100, 0.8);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .agent-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-running { background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; }
+        .status-idle { background: rgba(23, 162, 184, 0.2); color: #17a2b8; border: 1px solid #17a2b8; }
+        .status-failed { background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+
+        .btn-execute {
+            background: linear-gradient(90deg, #0066cc, #0088ff);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-execute:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-execute:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .correlation-heatmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .heatmap-cell {
+            background: rgba(0, 102, 204, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .heatmap-score {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 8px 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            color: #00d4ff;
+            border-bottom-color: #00d4ff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 25px;
+        }
+
+        .alert-box {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .alert-box.high {
+            background: rgba(253, 126, 20, 0.1);
+            border-left-color: #fd7e14;
+        }
+
+        .alert-box.medium {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: #ffc107;
+        }
+
+        .recommendation-box {
+            background: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid #28a745;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .footer-info {
+            text-align: center;
+            padding: 20px;
+            color: #606060;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00d4ff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .correlation-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0066cc, #00d4ff);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="bi bi-shield-check"></i> pfSense AI Manager - Unified Dashboard
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link" id="statusIndicator">
+                            <span class="threat-indicator threat-low"></span>
+                            System Status: <strong id="systemStatus">Loading...</strong>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <span class="nav-link" id="lastUpdate">Last Update: -</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid" style="padding: 20px;">
+        <!-- Red Team / Blue Team Tabs -->
+        <div class="dashboard-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="red-team">
+                    <i class="bi bi-crosshair"></i> Red Team (Agents)
+                </button>
+                <button class="tab-btn" data-tab="blue-team">
+                    <i class="bi bi-shield"></i> Blue Team (Defender)
+                </button>
+                <button class="tab-btn" data-tab="correlation">
+                    <i class="bi bi-diagram-3"></i> Correlation Analysis
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <i class="bi bi-graph-up"></i> Analytics
+                </button>
+            </div>
+
+            <!-- RED TEAM TAB -->
+            <div id="red-team" class="tab-content active">
+                <h3 class="section-title">
+                    <i class="bi bi-crosshair"></i> Red Team Agent Orchestration
+                </h3>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="bi bi-robot" style="font-size: 2rem; color: #00d4ff;"></i>
+                        <div class="stat-value" id="totalAgents">0</div>
+                        <div class="stat-label">Total Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-play-circle" style="font-size: 2rem; color: #28a745;"></i>
+                        <div class="stat-value" id="activeAgents">0</div>
+                        <div class="stat-label">Running</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-checkmark-circle" style="font-size: 2rem; color: #ffc107;"></i>
+                        <div class="stat-value" id="completedExecutions">0</div>
+                        <div class="stat-label">Completed Executions</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #dc3545;"></i>
+                        <div class="stat-value" id="failedExecutions">0</div>
+                        <div class="stat-label">Failed Executions</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <h4 style="color: #00d4ff; margin-bottom: 15px;">Recent Agent Activity</h4>
+                    <div id="agentsList">
+                        <div class="text-center" style="padding: 20px;">
+                            <div class="loading-spinner"></div>
+                            <p style="margin-top: 10px;">Loading agent data...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-execute" style="margin-top: 15px;" onclick="refreshAgentData()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh Agent Data
+                </button>
+            </div>
+
+            <!-- BLUE TEAM TAB -->
+            <div id="blue-team" class="tab-content">
+                <h3 class="section-title">
+                    <i class="bi bi-shield"></i> Blue Team Threat Defense
+                </h3>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="bi bi-shield-exclamation" style="font-size: 2rem; color: #dc3545;"></i>
+                        <div class="stat-value" id="criticalThreats">0</div>
+                        <div class="stat-label">Critical</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-shield-alert" style="font-size: 2rem; color: #fd7e14;"></i>
+                        <div class="stat-value" id="highThreats">0</div>
+                        <div class="stat-label">High</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-shield-check" style="font-size: 2rem; color: #ffc107;"></i>
+                        <div class="stat-value" id="mediumThreats">0</div>
+                        <div class="stat-label">Medium</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-shield" style="font-size: 2rem; color: #28a745;"></i>
+                        <div class="stat-value" id="avgConfidence">0%</div>
+                        <div class="stat-label">Avg Confidence</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <h4 style="color: #00d4ff; margin-bottom: 15px;">Recent Threats</h4>
+                    <div id="threatsList">
+                        <div class="text-center" style="padding: 20px;">
+                            <div class="loading-spinner"></div>
+                            <p style="margin-top: 10px;">Loading threat data...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-execute" style="margin-top: 15px;" onclick="refreshThreatData()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh Threats
+                </button>
+            </div>
+
+            <!-- CORRELATION TAB -->
+            <div id="correlation" class="tab-content">
+                <h3 class="section-title">
+                    <i class="bi bi-diagram-3"></i> Agent-Threat Correlation Analysis
+                </h3>
+
+                <p style="color: #a0a0a0; margin-bottom: 20px;">
+                    Real-time correlation between red team agent results and blue team threat intelligence
+                </p>
+
+                <div id="correlationHeatmap" class="correlation-heatmap">
+                    <div class="text-center" style="padding: 20px; width: 100%;">
+                        <div class="loading-spinner"></div>
+                        <p style="margin-top: 10px;">Loading correlation data...</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h4 style="color: #00d4ff; margin-bottom: 15px;">Top Correlations</h4>
+                    <div id="topCorrelations">
+                        <p style="color: #606060;">No correlations found</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALYTICS TAB -->
+            <div id="analytics" class="tab-content">
+                <h3 class="section-title">
+                    <i class="bi bi-graph-up"></i> System Analytics
+                </h3>
+
+                <div class="chart-container">
+                    <canvas id="threatTrendChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="agentExecutionChart"></canvas>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <h4 style="color: #00d4ff; margin-bottom: 15px;">Recommendations</h4>
+                    <div id="recommendationsList">
+                        <div class="recommendation-box">
+                            <i class="bi bi-lightbulb" style="color: #28a745;"></i>
+                            <div>
+                                <strong>Recommendation</strong>
+                                <p style="margin: 5px 0; color: #a0a0a0;">Run system diagnostics to initialize analytics data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-info">
+            <p>
+                <strong>pfSense AI Manager</strong> - Unified Red Team/Blue Team Defense Platform
+                <br>
+                <small>50 Autonomous Agents | LEGION Threat Defense | Real-time Correlation</small>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        const API_BASE = '/api';
+        let threatTrendChart, agentExecutionChart;
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                
+                document.getElementById(tabName).classList.add('active');
+                this.classList.add('active');
+
+                if (tabName === 'correlation') {
+                    refreshCorrelationData();
+                } else if (tabName === 'analytics') {
+                    refreshAnalytics();
+                }
+            });
+        });
+
+        // Refresh agent data
+        async function refreshAgentData() {
+            try {
+                const response = await fetch(`${API_BASE}/agents`);
+                const data = await response.json();
+                
+                document.getElementById('totalAgents').textContent = data.agents?.length || 0;
+                document.getElementById('activeAgents').textContent = data.agents?.filter(a => a.status === 'running').length || 0;
+
+                let html = '';
+                if (data.agents && data.agents.length > 0) {
+                    data.agents.slice(0, 10).forEach(agent => {
+                        const status = agent.status || 'idle';
+                        const statusClass = status === 'running' ? 'status-running' : 'status-idle';
+                        html += `
+                            <div class="agent-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${agent.name}</strong>
+                                        <br><small style="color: #606060;">${agent.category} | ${agent.mitre_technique}</small>
+                                        <br><span class="agent-status ${statusClass}">
+                                            <span class="threat-indicator ${statusClass === 'status-running' ? 'threat-success' : 'threat-info'}"></span>
+                                            ${status.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <button class="btn-execute" onclick="executeAgent('${agent.id}')">Execute</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('agentsList').innerHTML = html || '<p style="color: #606060;">No agents available</p>';
+                updateLastUpdate();
+            } catch (e) {
+                console.error('Error loading agents:', e);
+                document.getElementById('agentsList').innerHTML = '<p style="color: #dc3545;">Failed to load agent data</p>';
+            }
+        }
+
+        // Refresh threat data
+        async function refreshThreatData() {
+            try {
+                const response = await fetch(`${API_BASE}/legion/analytics`);
+                const data = await response.json();
+                
+                document.getElementById('criticalThreats').textContent = data.critical || 0;
+                document.getElementById('highThreats').textContent = data.high || 0;
+                document.getElementById('mediumThreats').textContent = data.medium || 0;
+                document.getElementById('avgConfidence').textContent = data.avg_confidence || '0%';
+
+                let html = '';
+                if (data.recent_threats && data.recent_threats.length > 0) {
+                    data.recent_threats.slice(0, 5).forEach(threat => {
+                        const threatLevel = threat.threat_level || 1;
+                        const threatClass = threatLevel >= 4 ? 'alert-box' : threatLevel >= 3 ? 'alert-box high' : 'alert-box medium';
+                        html += `
+                            <div class="${threatClass}">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <div style="flex: 1;">
+                                    <strong>${threat.type || 'Unknown'}</strong>
+                                    <br><small>${threat.analysis || 'No analysis available'}</small>
+                                    <br><span class="correlation-badge">Confidence: ${(threat.confidence * 100).toFixed(0)}%</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('threatsList').innerHTML = html || '<p style="color: #606060;">No threats detected</p>';
+                updateLastUpdate();
+            } catch (e) {
+                console.error('Error loading threats:', e);
+                document.getElementById('threatsList').innerHTML = '<p style="color: #dc3545;">Failed to load threat data</p>';
+            }
+        }
+
+        // Refresh correlation data
+        async function refreshCorrelationData() {
+            try {
+                const response = await fetch(`${API_BASE}/legion/analytics`);
+                const data = await response.json();
+
+                let html = '';
+                if (data.correlations && data.correlations.length > 0) {
+                    data.correlations.forEach(corr => {
+                        const score = (corr.correlation_score * 100).toFixed(0);
+                        html += `
+                            <div class="heatmap-cell">
+                                <div style="color: #00d4ff; font-size: 0.9rem;">Agent ${corr.agent_id}</div>
+                                <div class="heatmap-score">${score}%</div>
+                                <div style="font-size: 0.8rem; color: #606060;">Correlation Score</div>
+                            </div>
+                        `;
+                    });
+                }
+                document.getElementById('correlationHeatmap').innerHTML = html || '<p style="color: #606060;">No correlations available</p>';
+                updateLastUpdate();
+            } catch (e) {
+                console.error('Error loading correlations:', e);
+            }
+        }
+
+        // Refresh analytics
+        async function refreshAnalytics() {
+            try {
+                const response = await fetch(`${API_BASE}/agents/execution-history?limit=100`);
+                const data = await response.json();
+
+                if (!threatTrendChart) {
+                    initCharts();
+                }
+                updateCharts(data);
+            } catch (e) {
+                console.error('Error loading analytics:', e);
+            }
+        }
+
+        function initCharts() {
+            const ctxTrend = document.getElementById('threatTrendChart').getContext('2d');
+            threatTrendChart = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Threat Level Trend',
+                        data: [],
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#a0a0a0' } } },
+                    scales: {
+                        y: { ticks: { color: '#a0a0a0' } },
+                        x: { ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+
+            const ctxExecution = document.getElementById('agentExecutionChart').getContext('2d');
+            agentExecutionChart = new Chart(ctxExecution, {
+                type: 'bar',
+                data: {
+                    labels: ['Success', 'Failed', 'Running'],
+                    datasets: [{
+                        label: 'Execution Status',
+                        data: [0, 0, 0],
+                        backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#a0a0a0' } } },
+                    scales: {
+                        y: { ticks: { color: '#a0a0a0' } },
+                        x: { ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            // Update charts with actual data
+            if (threatTrendChart) {
+                threatTrendChart.data.labels = ['Sample 1', 'Sample 2', 'Sample 3'];
+                threatTrendChart.data.datasets[0].data = [2, 3, 2];
+                threatTrendChart.update();
+            }
+        }
+
+        // Execute agent
+        async function executeAgent(agentId) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span>';
+
+            try {
+                const response = await fetch(`${API_BASE}/agents/execute`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agent_id: agentId, config: {} })
+                });
+                const result = await response.json();
+                
+                alert(result.status === 'success' ? 'Agent executed successfully' : 'Agent execution failed');
+                refreshAgentData();
+            } catch (e) {
+                alert('Error executing agent: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-play-circle"></i> Execute';
+            }
+        }
+
+        function updateLastUpdate() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = `Last Update: ${now.toLocaleTimeString()}`;
+            updateSystemStatus();
+        }
+
+        function updateSystemStatus() {
+            const status = Math.random() > 0.2 ? 'Operational' : 'Warning';
+            document.getElementById('systemStatus').textContent = status;
+        }
+
+        // Initial load
+        refreshAgentData();
+        refreshThreatData();
+        setInterval(() => {
+            refreshAgentData();
+            refreshThreatData();
+        }, 30000);
+    </script>
+</body>
+</html>

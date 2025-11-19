@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackers6thSense - Intelligent Network Defense</title>
+    <link rel="stylesheet" href="/css/main-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">🧠</div>
+            <h1 class="logo-text">Hackers6thSense</h1>
+            <p class="tagline">AI Network Defense</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="navigateTo('overview')">
+                <i class="fas fa-chart-line"></i> Overview
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('threats')">
+                <i class="fas fa-shield-alt"></i> Threats
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('traffic')">
+                <i class="fas fa-network-wired"></i> Traffic
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('logs')">
+                <i class="fas fa-file-alt"></i> Logs
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('attacks')">
+                <i class="fas fa-crosshairs"></i> Attacks
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('config')">
+                <i class="fas fa-cogs"></i> Configuration
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('legion')">
+                <i class="fas fa-shield-virus"></i> LEGION
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('intelligence')">
+                <i class="fas fa-brain"></i> Intelligence
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('schedules')">
+                <i class="fas fa-calendar-alt"></i> Schedules
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('filters')">
+                <i class="fas fa-filter"></i> Filters
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('chat')">
+                <i class="fas fa-comments"></i> AI Chat
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('agents')">
+                <i class="fas fa-robot"></i> Agents
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('settings')">
+                <i class="fas fa-sliders-h"></i> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Online</span>
+            </div>
+            <p class="version">v1.0.0</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 id="page-title">System Overview</h2>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-icons">
+                    <button class="icon-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="icon-btn" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://via.placeholder.com/40" alt="User">
+                        <div class="user-info">
+                            <p class="user-name">Admin</p>
+                            <p class="user-role">Security Lead</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content">
+            <!-- Overview Tab -->
+            <section id="overview" class="page-section active">
+                <h1>System Overview</h1>
+                
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card danger">
+                        <div class="metric-header">
+                            <h3>Critical Threats</h3>
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="metric-value" id="critical-count">0</div>
+                        <p class="metric-label">Active alerts</p>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-header">
+                            <h3>Network Health</h3>
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="metric-value" id="health-score">0%</div>
+                        <p class="metric-label">System status</p>
+                    </div>
+                    <div class="metric-card info">
+                        <div class="metric-header">
+                            <h3>Active Agents</h3>
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="metric-value" id="agent-count">0</div>
+                        <p class="metric-label">Running</p>
+                    </div>
+                    <div class="metric-card success">
+                        <div class="metric-header">
+                            <h3>Threat Blocked</h3>
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <div class="metric-value" id="blocked-count">0</div>
+                        <p class="metric-label">24-hour total</p>
+                    </div>
+                </div>
+
+                <!-- Overview Panels -->
+                <div class="overview-grid">
+                    <!-- System Status Panel -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>System Status</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="system-status-detail">
+                                <div class="status-item">
+                                    <span class="status-label">pfSense Firewall</span>
+                                    <span class="status-badge online">Online</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">AI Engine</span>
+                                    <span class="status-badge online">Ready</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Database</span>
+                                    <span class="status-badge online">Connected</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Oblivion Framework</span>
+                                    <span class="status-badge online">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Threats -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Top Threats</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="top-threats">
+                                <div class="threat-item critical">
+                                    <span class="threat-type">Brute Force Attack</span>
+                                    <span class="threat-severity">CRITICAL</span>
+                                </div>
+                                <div class="threat-item high">
+                                    <span class="threat-type">SQL Injection Attempt</span>
+                                    <span class="threat-severity">HIGH</span>
+                                </div>
+                                <div class="threat-item medium">
+                                    <span class="threat-type">Port Scanning Activity</span>
+                                    <span class="threat-severity">MEDIUM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Providers -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>AI Providers</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="ai-providers-status">
+                                <div class="provider-item">
+                                    <div class="provider-name">Mistral AI</div>
+                                    <div class="provider-status active">Active</div>
+                                </div>
+                                <div class="provider-item">
+                                    <div class="provider-name">Groq API</div>
+                                    <div class="provider-status active">Ready</div>
+                                </div>
+                                <div class="provider-item">
+                                    <div class="provider-name">Google Gemini</div>
+                                    <div class="provider-status active">Connected</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="panel-content quick-actions">
+                            <button class="action-btn" onclick="navigateTo('threats')">
+                                <i class="fas fa-search"></i> Scan Threats
+                            </button>
+                            <button class="action-btn" onclick="navigateTo('traffic')">
+                                <i class="fas fa-chart-bar"></i> Analyze Traffic
+                            </button>
+                            <button class="action-btn" onclick="navigateTo('config')">
+                                <i class="fas fa-wrench"></i> Check Config
+                            </button>
+                            <button class="action-btn" onclick="navigateTo('attacks')">
+                                <i class="fas fa-play"></i> Run Simulation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-panel">
+                        <h3>Threat Timeline (24 Hours)</h3>
+                        <canvas id="threat-timeline-chart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Attack Distribution</h3>
+                        <canvas id="attack-dist-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Threats Tab -->
+            <section id="threats" class="page-section">
+                <h1>Security Threats</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="runThreatScan()">
+                        <i class="fas fa-shield-alt"></i> Run Threat Scan
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportThreats()">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                    <div class="filter-group">
+                        <select id="threat-severity" onchange="filterThreats()">
+                            <option value="">All Severities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="threats-container" id="threats-list">
+                    <!-- Threats will be populated here -->
+                </div>
+            </section>
+
+            <!-- Traffic Tab -->
+            <section id="traffic" class="page-section">
+                <h1>Network Traffic Analysis</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="analyzeTrafficData()">
+                        <i class="fas fa-chart-bar"></i> Analyze Traffic
+                    </button>
+                    <div class="filter-group">
+                        <select id="traffic-timeframe">
+                            <option value="1h">Last Hour</option>
+                            <option value="6h">Last 6 Hours</option>
+                            <option value="24h" selected>Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="traffic-grid">
+                    <div class="traffic-panel">
+                        <h3>Total Traffic</h3>
+                        <div id="total-traffic">0 GB</div>
+                    </div>
+                    <div class="traffic-panel">
+                        <h3>Inbound</h3>
+                        <div id="inbound-traffic">0 GB</div>
+                    </div>
+                    <div class="traffic-panel">
+                        <h3>Outbound</h3>
+                        <div id="outbound-traffic">0 GB</div>
+                    </div>
+                    <div class="traffic-panel">
+                        <h3>Anomalies</h3>
+                        <div id="traffic-anomalies">0</div>
+                    </div>
+                </div>
+
+                <div class="traffic-details" id="traffic-analysis">
+                    <!-- Traffic analysis will be displayed here -->
+                </div>
+            </section>
+
+            <!-- Logs Tab -->
+            <section id="logs" class="page-section">
+                <h1>System Logs & Analysis</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="loadSystemLogs()">
+                        <i class="fas fa-sync-alt"></i> Refresh Logs
+                    </button>
+                    <button class="btn btn-secondary" onclick="analyzeLogs()">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                    <button class="btn btn-secondary" onclick="searchLogs()">
+                        <i class="fas fa-filter"></i> Search
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportLogs()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <div class="filter-group">
+                        <select id="log-severity" onchange="filterLogsByType()">
+                            <option value="">All Log Types</option>
+                            <option value="error">Errors</option>
+                            <option value="warning">Warnings</option>
+                            <option value="info">Info</option>
+                            <option value="debug">Debug</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="log-patterns" id="log-patterns-view">
+                    <h3>Pattern Detection</h3>
+                    <div id="detected-patterns"></div>
+                </div>
+
+                <div class="logs-container" id="logs-list">
+                    <!-- Logs will be populated here -->
+                </div>
+            </section>
+
+            <!-- Attacks Tab -->
+            <section id="attacks" class="page-section">
+                <h1>Attack Simulations & Red Team</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-danger" onclick="startOblivionSimulation()">
+                        <i class="fas fa-play-circle"></i> Start Simulation
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewAttackHistory()">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                </div>
+
+                <div class="attacks-grid">
+                    <!-- Attack Simulation Card -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-network-wired"></i> DDoS Simulation</h3>
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                        <p class="attack-description">Simulate distributed denial of service attack</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>DDoS Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>30-60 minutes</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('ddos')">Execute</button>
+                    </div>
+
+                    <!-- SQL Injection Card -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-database"></i> SQL Injection</h3>
+                            <span class="difficulty high">High</span>
+                        </div>
+                        <p class="attack-description">Test database vulnerability to SQL injection</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>SQLi Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>15-30 minutes</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('sqli')">Execute</button>
+                    </div>
+
+                    <!-- Brute Force Card -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-lock"></i> Brute Force</h3>
+                            <span class="difficulty high">High</span>
+                        </div>
+                        <p class="attack-description">Test authentication system with brute force</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>Brute Force Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>10-20 minutes</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('bruteforce')">Execute</button>
+                    </div>
+
+                    <!-- Ransomware Simulation -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-file-shield"></i> Ransomware Sim</h3>
+                            <span class="difficulty critical">Critical</span>
+                        </div>
+                        <p class="attack-description">Ransomware behavior simulation and defense test</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>Ransomware Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>20-40 minutes</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('ransomware')">Execute</button>
+                    </div>
+
+                    <!-- Phishing Campaign -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-envelope"></i> Phishing Campaign</h3>
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                        <p class="attack-description">Generate and simulate phishing emails</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>Phishing Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>2-4 hours</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('phishing')">Execute</button>
+                    </div>
+
+                    <!-- Attack Planning -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-lightbulb"></i> AI Attack Plan</h3>
+                            <span class="difficulty advanced">Advanced</span>
+                        </div>
+                        <p class="attack-description">AI-generated custom attack plan</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">AI:</span>
+                                <span>Mistral AI</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>Variable</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="generateAttackPlan()">Generate</button>
+                    </div>
+
+                    <!-- Metasploit Exploitation -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-rocket"></i> Metasploit</h3>
+                            <span class="difficulty critical">Critical</span>
+                        </div>
+                        <p class="attack-description">Metasploit-based exploitation testing</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>Metasploit Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>30-90 minutes</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="executeAttack('metasploit')">Execute</button>
+                    </div>
+
+                    <!-- Disinformation Campaign -->
+                    <div class="attack-card">
+                        <div class="attack-header">
+                            <h3><i class="fas fa-megaphone"></i> Disinformation</h3>
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                        <p class="attack-description">Generate disinformation and social engineering content</p>
+                        <div class="attack-details">
+                            <div class="detail-item">
+                                <span class="label">Modules:</span>
+                                <span>Disinformation Engine</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Duration:</span>
+                                <span>1-4 hours</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Status:</span>
+                                <span class="status-badge online">Ready</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-small" onclick="generateDisinformation()">Generate</button>
+                    </div>
+                </div>
+
+                <!-- Attack Statistics -->
+                <div class="attack-statistics">
+                    <h3>Attack Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h4>Total Attacks</h4>
+                            <div id="total-attacks-stat">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Success Rate</h4>
+                            <div id="success-rate-stat">0%</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Average Duration</h4>
+                            <div id="avg-duration-stat">0 min</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Last Attack</h4>
+                            <div id="last-attack-stat">N/A</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-small" onclick="viewAttackStatistics()">View Detailed Stats</button>
+                </div>
+            </section>
+
+            <!-- LEGION Tab -->
+            <section id="legion" class="page-section">
+                <h1>LEGION Threat Intelligence</h1>
+
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="startLegionDefender()">
+                        <i class="fas fa-play-circle"></i> Start Defender
+                    </button>
+                    <button class="btn btn-secondary" onclick="getLegionStatus()">
+                        <i class="fas fa-heartbeat"></i> Check Status
+                    </button>
+                    <button class="btn btn-secondary" onclick="correlateThreats()">
+                        <i class="fas fa-link"></i> Correlate Threats
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportLegionIntel()">
+                        <i class="fas fa-download"></i> Export Intel
+                    </button>
+                </div>
+
+                <div class="legion-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Defender Status</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-defender-status">
+                                <div class="status-item">
+                                    <span class="status-label">Defender State</span>
+                                    <span class="status-badge online">Idle</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Last Update</span>
+                                    <span id="defender-last-update">-</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Threats Detected</span>
+                                    <span id="defender-threats">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Threat Analysis</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-threat-analysis">
+                                <!-- Analysis results will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Correlated Intelligence</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-correlations">
+                                <!-- Correlations will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Threat Intel Feed</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-intel-feed">
+                                <!-- Intel feed will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Recommendations</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-recommendations">
+                                <!-- Recommendations will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Analytics</h3>
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="panel-content">
+                            <div id="legion-analytics">
+                                <!-- Analytics will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration Tab -->
+            <section id="config" class="page-section">
+                <h1>System Configuration</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="analyzeConfiguration()">
+                        <i class="fas fa-search"></i> Analyze Config
+                    </button>
+                    <button class="btn btn-secondary" onclick="getConfigRecommendations()">
+                        <i class="fas fa-lightbulb"></i> Recommendations
+                    </button>
+                </div>
+
+                <div class="config-tabs">
+                    <div class="config-tab active">
+                        <h3>Firewall Rules</h3>
+                        <div id="firewall-rules" class="config-content">
+                            <!-- Rules will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="config-tab">
+                        <h3>Integration Status</h3>
+                        <div class="config-content">
+                            <div class="integration-status">
+                                <div class="integration-item">
+                                    <h4>Oblivion Framework</h4>
+                                    <span class="status-badge online">Connected</span>
+                                </div>
+                                <div class="integration-item">
+                                    <h4>LEGION Threat Intel</h4>
+                                    <span class="status-badge online">Synced</span>
+                                </div>
+                                <div class="integration-item">
+                                    <h4>Mistral AI</h4>
+                                    <span class="status-badge online">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Intelligence Tab -->
+            <section id="intelligence" class="page-section">
+                <h1>Threat Intelligence</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="refreshThreatIntel()">
+                        <i class="fas fa-sync-alt"></i> Refresh Intel
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportIntelligence()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+
+                <div class="intelligence-grid">
+                    <div class="intel-panel">
+                        <h3>Recent Threats</h3>
+                        <div id="recent-threats" class="intel-list">
+                            <!-- Recent threats will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="intel-panel">
+                        <h3>Vulnerability Report</h3>
+                        <div id="vuln-report" class="intel-list">
+                            <!-- Vulnerabilities will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="intel-panel">
+                        <h3>Recommendations</h3>
+                        <div id="intel-recommendations" class="intel-list">
+                            <!-- Recommendations will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Tab -->
+            <section id="chat" class="page-section">
+                <h1>AI Assistant - Multi-Turn Conversation</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-secondary" onclick="getConversationHistory()">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                    <button class="btn btn-secondary" onclick="summarizeConversation()">
+                        <i class="fas fa-file-alt"></i> Summary
+                    </button>
+                    <button class="btn btn-danger" onclick="clearChatHistory()">
+                        <i class="fas fa-trash"></i> Clear Chat
+                    </button>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-history" id="chat-messages">
+                        <div class="chat-message bot">
+                            <p>Hello! I'm your AI Security Assistant. I support multi-turn conversations and can help with security analysis, threat detection, attack planning, and more. How can I help you today?</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Ask me anything about your network security..." onkeypress="handleChatKeypress(event)">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedules Tab -->
+            <section id="schedules" class="page-section">
+                <h1>Automated Schedules</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="createNewSchedule()">
+                        <i class="fas fa-plus-circle"></i> Create Schedule
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewExecutionHistory()">
+                        <i class="fas fa-history"></i> Execution History
+                    </button>
+                    <button class="btn btn-secondary" onclick="executeScheduledJobs()">
+                        <i class="fas fa-play-circle"></i> Run Now
+                    </button>
+                    <button class="btn btn-secondary" onclick="getScheduleStats()">
+                        <i class="fas fa-chart-bar"></i> Statistics
+                    </button>
+                </div>
+
+                <div class="schedules-container">
+                    <div class="schedule-form" id="schedule-form" style="display: none;">
+                        <h3>New Schedule</h3>
+                        <div class="form-group">
+                            <label>Schedule Name</label>
+                            <input type="text" id="schedule-name" placeholder="e.g., Daily Threat Scan">
+                        </div>
+                        <div class="form-group">
+                            <label>Task Type</label>
+                            <select id="schedule-task">
+                                <option value="">Select Task</option>
+                                <option value="threat-scan">Threat Scan</option>
+                                <option value="traffic-analysis">Traffic Analysis</option>
+                                <option value="log-analysis">Log Analysis</option>
+                                <option value="config-check">Config Check</option>
+                                <option value="attack-simulation">Attack Simulation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select id="schedule-frequency">
+                                <option value="hourly">Hourly</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
+                        <button class="btn btn-secondary" onclick="cancelScheduleForm()">Cancel</button>
+                    </div>
+
+                    <div id="schedules-list">
+                        <!-- Schedules will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters Tab -->
+            <section id="filters" class="page-section">
+                <h1>Advanced Filters & Rules</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="createNewFilter()">
+                        <i class="fas fa-plus-circle"></i> Create Filter
+                    </button>
+                    <button class="btn btn-secondary" onclick="applyAllFilters()">
+                        <i class="fas fa-check"></i> Apply All
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewActiveFilters()">
+                        <i class="fas fa-list"></i> Active Filters
+                    </button>
+                </div>
+
+                <div class="filters-container">
+                    <div class="filter-form" id="filter-form" style="display: none;">
+                        <h3>New Filter</h3>
+                        <div class="form-group">
+                            <label>Filter Name</label>
+                            <input type="text" id="filter-name" placeholder="e.g., Suspicious IPs">
+                        </div>
+                        <div class="form-group">
+                            <label>Filter Type</label>
+                            <select id="filter-type">
+                                <option value="">Select Type</option>
+                                <option value="ip">IP Address</option>
+                                <option value="port">Port</option>
+                                <option value="protocol">Protocol</option>
+                                <option value="threat-type">Threat Type</option>
+                                <option value="severity">Severity Level</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Filter Expression</label>
+                            <textarea id="filter-expression" placeholder="e.g., 192.168.*.* OR 10.0.*.*" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Apply To</label>
+                            <select id="filter-apply-to">
+                                <option value="logs">Logs</option>
+                                <option value="threats">Threats</option>
+                                <option value="traffic">Traffic</option>
+                                <option value="all">All Data</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveFilter()">Save Filter</button>
+                        <button class="btn btn-secondary" onclick="cancelFilterForm()">Cancel</button>
+                    </div>
+
+                    <div id="filters-list">
+                        <!-- Filters will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agents Tab -->
+            <section id="agents" class="page-section">
+                <h1>Autonomous Agents & Batch Execution</h1>
+                
+                <div class="control-bar">
+                    <button class="btn btn-primary" onclick="startNewAgent()">
+                        <i class="fas fa-plus-circle"></i> Start Agent
+                    </button>
+                    <button class="btn btn-danger" onclick="executeBatchAgents()">
+                        <i class="fas fa-rocket"></i> Batch Execute
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewAgentLogs()">
+                        <i class="fas fa-file-alt"></i> View Logs
+                    </button>
+                    <button class="btn btn-secondary" onclick="getAgentStatistics()">
+                        <i class="fas fa-chart-bar"></i> Statistics
+                    </button>
+                    <button class="btn btn-secondary" onclick="getActiveAgents()">
+                        <i class="fas fa-heartbeat"></i> Active Agents
+                    </button>
+                </div>
+
+                <div class="agent-batch-section">
+                    <h3>Batch Execution Configuration</h3>
+                    <div class="batch-form">
+                        <label>
+                            <input type="checkbox" id="batch-select-all" onchange="toggleBatchSelection()">
+                            Select All for Batch
+                        </label>
+                        <button class="btn btn-small" onclick="executeBatchAgents()">Execute Selected Batch</button>
+                    </div>
+                </div>
+
+                <div class="agents-grid" id="agents-list">
+                    <!-- Agents will be listed here -->
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings" class="page-section">
+                <h1>Settings & Configuration</h1>
+                
+                <div class="settings-sections">
+                    <div class="settings-section">
+                        <h3>System Settings</h3>
+                        <div class="setting-item">
+                            <label>Auto-refresh Dashboard</label>
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label>Enable Notifications</label>
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label>Dark Mode</label>
+                            <input type="checkbox">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Alert Settings</h3>
+                        <div class="setting-item">
+                            <label>Alert on Critical Threats</label>
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label>Email Notifications</label>
+                            <input type="checkbox">
+                        </div>
+                        <div class="setting-item">
+                            <label>Slack Integration</label>
+                            <input type="checkbox">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>AI Provider</h3>
+                        <select>
+                            <option>Mistral AI (Active)</option>
+                            <option>Groq API</option>
+                            <option>Google Gemini</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-actions">
+                    <button class="btn btn-primary">Save Settings</button>
+                    <button class="btn btn-secondary">Reset to Default</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/main-dashboard.js"></script>
+</body>
+</html>
