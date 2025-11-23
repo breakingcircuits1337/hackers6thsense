@@ -54,6 +54,8 @@ class Router
         // System routes
         $this->routes['GET /api/system/status'] = 'PfSenseAI\API\Endpoints\SystemEndpoint@status';
         $this->routes['GET /api/system/providers'] = 'PfSenseAI\API\Endpoints\SystemEndpoint@getProviders';
+        $this->routes['GET /api/system/settings'] = 'PfSenseAI\API\Endpoints\SystemEndpoint@getSettings';
+        $this->routes['POST /api/system/settings'] = 'PfSenseAI\API\Endpoints\SystemEndpoint@saveSettings';
 
         // Agent routes
         $this->routes['GET /api/agents'] = 'PfSenseAI\API\Endpoints\AgentEndpoint@listAgents';
@@ -95,18 +97,18 @@ class Router
         $this->routes['POST /api/oblivion/session/start'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@startSession';
         $this->routes['POST /api/oblivion/plan'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@generatePlan';
         $this->routes['GET /api/oblivion/status'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@getStatus';
-        
+
         // Oblivion Integration routes - Attack Execution
         $this->routes['POST /api/oblivion/attack/ddos'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@executeDDoS';
         $this->routes['POST /api/oblivion/attack/sqli'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@executeSQLi';
         $this->routes['POST /api/oblivion/attack/bruteforce'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@executeBruteForce';
         $this->routes['POST /api/oblivion/attack/ransomware'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@executeRansomware';
         $this->routes['POST /api/oblivion/attack/metasploit'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@executeMetasploit';
-        
+
         // Oblivion Integration routes - Social Engineering
         $this->routes['POST /api/oblivion/phishing/generate'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@generatePhishing';
         $this->routes['POST /api/oblivion/disinformation/generate'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@generateDisinformation';
-        
+
         // Oblivion Integration routes - Statistics & Monitoring
         $this->routes['GET /api/oblivion/statistics'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@getStatistics';
         $this->routes['GET /api/oblivion/attacks/recent'] = 'PfSenseAI\API\Endpoints\OblivionEndpoint@getRecentAttacks';
@@ -127,7 +129,7 @@ class Router
     {
         try {
             [$class, $method] = explode('@', $handler);
-            
+
             if (!class_exists($class)) {
                 $this->errorHandler->handleException(
                     new \Exception("Handler class not found: $class"),
@@ -136,7 +138,7 @@ class Router
             }
 
             $instance = new $class();
-            
+
             if (!method_exists($instance, $method)) {
                 $this->errorHandler->handleException(
                     new \Exception("Handler method not found: $method in $class"),

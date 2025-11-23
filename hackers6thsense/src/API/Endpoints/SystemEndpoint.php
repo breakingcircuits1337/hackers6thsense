@@ -51,4 +51,48 @@ class SystemEndpoint extends Router
             $this->errorHandler->handleException($e, 'SystemEndpoint::getProviders');
         }
     }
+
+    public function getSettings()
+    {
+        try {
+            $db = new \PfSenseAI\Database\Database();
+            $settings = $db->query("SELECT * FROM system_settings");
+
+            $formattedSettings = [];
+            foreach ($settings as $setting) {
+                $formattedSettings[$setting['key']] = $setting['value'];
+            }
+
+            self::response([
+                'status' => 'success',
+                'settings' => $formattedSettings
+            ]);
+        } catch (\Exception $e) {
+            $this->errorHandler->handleException($e, 'SystemEndpoint::getSettings');
+        }
+    }
+
+    public function saveSettings()
+    {
+        try {
+            $input = self::getInput();
+            $db = new \PfSenseAI\Database\Database();
+
+            foreach ($input as $key => $value) {
+                // Upsert setting
+                $db->query(
+                    "INSERT INTO system_settings (key, value, updated_at) VALUES (:key, :value, CURRENT_TIMESTAMP) 
+                     ON CONFLICT(key) DO UPDATE SET value = :value, updated_at = CURRENT_TIMESTAMP",
+                    ['key' => $key, 'value' => $value]
+                );
+            }
+
+            self::response([
+                'status' => 'success',
+                'message' => 'Settings saved successfully'
+            ]);
+        } catch (\Exception $e) {
+            $this->errorHandler->handleException($e, 'SystemEndpoint::saveSettings');
+        }
+    }
 }

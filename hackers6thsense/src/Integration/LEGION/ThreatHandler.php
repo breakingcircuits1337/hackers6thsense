@@ -263,7 +263,7 @@ class ThreatHandler
     {
         try {
             $containmentSteps = $threatData['recommendations'] ?? [];
-            
+
             foreach ($containmentSteps as $step) {
                 if (isset($step['action']) && isset($step['target'])) {
                     $this->executeContainmentAction($step['action'], $step['target']);
@@ -346,7 +346,15 @@ class ThreatHandler
     private function notifySecurityTeam(array $threatData, string $level): bool
     {
         try {
-            $webhook = getenv('SECURITY_WEBHOOK_URL');
+            // Fetch settings from database
+            $settings = $this->db->query("SELECT * FROM system_settings WHERE key IN ('slack_webhook', 'security_email')");
+            $config = [];
+            foreach ($settings as $s) {
+                $config[$s['key']] = $s['value'];
+            }
+
+            // Slack Notification
+            $webhook = $config['slack_webhook'] ?? getenv('SECURITY_WEBHOOK_URL');
             if ($webhook) {
                 $this->httpClient->post($webhook, [
                     'json' => [
@@ -358,8 +366,8 @@ class ThreatHandler
                 ]);
             }
 
-            // Also send email if configured
-            $email = getenv('SECURITY_ALERT_EMAIL');
+            // Email Notification
+            $email = $config['security_email'] ?? getenv('SECURITY_ALERT_EMAIL');
             if ($email) {
                 $this->sendSecurityAlertEmail($email, $threatData, $level);
             }
@@ -381,7 +389,7 @@ class ThreatHandler
             "Threat Type: %s\nThreat Level: %d/5\nConfidence: %s%%\nTime: %s\n\nDetails:\n%s",
             $threatData['type'] ?? 'Unknown',
             $threatData['threat_level'] ?? 0,
-            (int)($threatData['confidence'] ?? 0) * 100,
+            (int) ($threatData['confidence'] ?? 0) * 100,
             date('Y-m-d H:i:s'),
             json_encode($threatData, JSON_PRETTY_PRINT)
         );

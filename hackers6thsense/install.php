@@ -1,7 +1,7 @@
 <?php
 
 /**
- * pfSense AI Manager - Installation & Verification Script
+ * Hackers6thSense - Installation & Verification Script
  * Checks environment and performs initial setup
  */
 
@@ -11,7 +11,8 @@ ini_set('display_errors', 1);
 define('APP_ROOT', __DIR__);
 
 // Color codes for terminal output
-class Colors {
+class Colors
+{
     const RESET = "\033[0m";
     const RED = "\033[91m";
     const GREEN = "\033[92m";
@@ -19,29 +20,34 @@ class Colors {
     const BLUE = "\033[94m";
 }
 
-function log_success($message) {
+function log_success($message)
+{
     echo Colors::GREEN . "✓ " . Colors::RESET . $message . "\n";
 }
 
-function log_error($message) {
+function log_error($message)
+{
     echo Colors::RED . "✗ " . Colors::RESET . $message . "\n";
 }
 
-function log_warning($message) {
+function log_warning($message)
+{
     echo Colors::YELLOW . "⚠ " . Colors::RESET . $message . "\n";
 }
 
-function log_info($message) {
+function log_info($message)
+{
     echo Colors::BLUE . "ℹ " . Colors::RESET . $message . "\n";
 }
 
-function log_section($title) {
+function log_section($title)
+{
     echo "\n" . Colors::BLUE . "=== " . $title . " ===" . Colors::RESET . "\n\n";
 }
 
 echo "\n" . Colors::BLUE;
 echo "╔═══════════════════════════════════════════════════════════════╗\n";
-echo "║       pfSense AI Manager - Installation & Verification       ║\n";
+echo "║       Hackers6thSense - Installation & Verification          ║\n";
 echo "╚═══════════════════════════════════════════════════════════════╝\n";
 echo Colors::RESET;
 
@@ -138,7 +144,7 @@ if (file_exists($envFile)) {
 log_section("6. Class Autoloading Check");
 if (file_exists(APP_ROOT . '/vendor/autoload.php')) {
     require_once APP_ROOT . '/vendor/autoload.php';
-    
+
     $classes = [
         'PfSenseAI\\Database\\Migration',
         'PfSenseAI\\Database\\Database',
@@ -150,7 +156,7 @@ if (file_exists(APP_ROOT . '/vendor/autoload.php')) {
         'PfSenseAI\\Utils\\Validator',
         'PfSenseAI\\Auth\\AuthMiddleware'
     ];
-    
+
     foreach ($classes as $class) {
         if (class_exists($class)) {
             log_success("Class found: $class");
@@ -166,7 +172,7 @@ log_section("7. Database Check");
 try {
     $db = PfSenseAI\Database\Database::getInstance();
     log_success("Database connection successful");
-    
+
     // Check if tables exist
     $tables = ['agents', 'schedules', 'execution_history', 'agent_results', 'filters'];
     foreach ($tables as $table) {
@@ -187,7 +193,7 @@ log_section("8. API Routes Check");
 try {
     $router = new PfSenseAI\API\Router();
     log_success("Router initialized successfully");
-    
+
     $testRoutes = [
         'GET /api/agents',
         'POST /api/agents/batch/execute',
@@ -195,7 +201,7 @@ try {
         'POST /api/schedules',
         'GET /api/filters'
     ];
-    
+
     foreach ($testRoutes as $route) {
         log_success("Route registered: $route");
     }
@@ -218,10 +224,10 @@ if ($allChecks) {
     echo Colors::GREEN;
     echo "╔═══════════════════════════════════════════════════════════════╗\n";
     echo "║              ✓ All checks passed!                             ║\n";
-    echo "║  pfSense AI Manager is ready for deployment                   ║\n";
+    echo "║  Hackers6thSense is ready for deployment                        ║\n";
     echo "╚═══════════════════════════════════════════════════════════════╝\n";
     echo Colors::RESET;
-    
+
     echo "\nNext steps:\n";
     echo "  1. Configure .env file with your API keys and database settings\n";
     echo "  2. Start the web server: php -S localhost:8000 -t public/\n";

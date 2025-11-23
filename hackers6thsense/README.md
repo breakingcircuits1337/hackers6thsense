@@ -1,6 +1,6 @@
 # Hackers6thSense
 
-A comprehensive PHP-based AI management tool for pfSense firewalls with intelligent network traffic analysis, security threat detection, configuration recommendations, log analysis, and natural language interface powered by Mistral, Groq, and Gemini APIs.
+A comprehensive PHP-based AI management tool for Hackers6thSense firewalls with intelligent network traffic analysis, security threat detection, configuration recommendations, log analysis, and natural language interface powered by Mistral, Groq, and Gemini APIs.
 
 ## Features
 
@@ -24,7 +24,7 @@ A comprehensive PHP-based AI management tool for pfSense firewalls with intellig
 
 1. **Clone or download the project**
    ```bash
-   cd pfsense-ai-manager
+   cd hackers6thsense
    ```
 
 2. **Install dependencies**
@@ -101,7 +101,7 @@ A comprehensive PHP-based AI management tool for pfSense firewalls with intellig
 ## Project Structure
 
 ```
-pfsense-ai-manager/
+hackers6thsense/
 ├── src/                          # Source code
 │   ├── AI/                       # AI provider implementations
 │   │   ├── AIProvider.php        # Base interface
@@ -291,22 +291,6 @@ MIT License - See LICENSE file for details
 For issues, questions, or suggestions, please create an issue or contact the development team.
 
 ## Roadmap
-
-- [ ] Machine learning-based threat prediction
-- [ ] Advanced log correlation
-- [ ] Custom rule recommendations
-- [ ] Multi-language support
-- [ ] Mobile app
-- [ ] Kubernetes integration
-- [ ] Advanced reporting and dashboards
-
-## Changelog
-
-### Version 1.0.0 (Initial Release)
-- Core AI integration (Mistral, Groq, Gemini)
-- Network traffic analysis
-- Security threat detection
-- Configuration recommendations
 - Log analysis
 - Natural language chat interface
 - REST API

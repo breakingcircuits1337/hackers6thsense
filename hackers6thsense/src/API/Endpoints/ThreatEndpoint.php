@@ -35,10 +35,29 @@ class ThreatEndpoint extends Router
     {
         try {
             $input = self::getInput();
-            $threatData = $input['threat'] ?? [];
+            $deepScan = $input['deep_scan'] ?? false;
 
+            // If deep_scan is requested, run a full threat detection
+            if ($deepScan) {
+                $detector = new ThreatDetector();
+                $result = $detector->detectThreats();
+
+                self::response([
+                    'status' => 'success',
+                    'message' => 'Deep threat scan completed',
+                    'data' => $result
+                ]);
+                return;
+            }
+
+            // Otherwise, analyze specific threat data
+            $threatData = $input['threat'] ?? [];
             if (empty($threatData)) {
-                $this->errorHandler->handleValidationError(['Threat data is required']);
+                self::response([
+                    'status' => 'error',
+                    'message' => 'No threat data or deep_scan parameter provided'
+                ], 400);
+                return;
             }
 
             $detector = new ThreatDetector();

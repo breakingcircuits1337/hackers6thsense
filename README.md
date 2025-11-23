@@ -1,6 +1,6 @@
-# BC's PFnonSense
+# Hackers6thSense
 
-## # BC’s PFnonsense
+## # Hackers6thSense
 _The hacker-themed, AI-augmented firewall & routing distro (forked from pfSense)_
 
 ![logo](src/usr/local/www/img/bc_logo.svg)
@@ -33,8 +33,8 @@ _The hacker-themed, AI-augmented firewall & routing distro (forked from pfSense)
 pkg install git gmake php81 php81-curl curl bash
 
 # 2. Clone & configure
-git clone https://github.com/your-org/PFnonsense.git
-cd PFnonsense
+git clone https://github.com/your-org/Hackers6thSense.git
+cd Hackers6thSense
 cp build.conf.sample build.conf   # tweak as needed
 
 # 3. Build appliance ISO / memstick
@@ -44,7 +44,7 @@ The resulting artefacts land in build/output/
 Flash to USB or boot in your favourite hypervisor.
 First-boot quick-start
 
-    Browse to https://192.168.1.1 → login admin / pfnonsense.
+    Browse to https://192.168.1.1 → login admin / hackers6thsense.
     Navigate: Services → AI Assistant Settings
         Paste API keys for Gemini/Mistral/Groq.
         Tick Enable Threat Monitor and Enable Honeypot.

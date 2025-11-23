@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="/css/main-dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
@@ -83,9 +85,9 @@
                     <input type="text" placeholder="Search...">
                 </div>
                 <div class="header-icons">
-                    <button class="icon-btn" title="Notifications">
+                    <button class="icon-btn" id="notification-bell" title="Notifications">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
+                        <span class="notification-badge" id="notification-count">3</span>
                     </button>
                     <button class="icon-btn" title="Refresh">
                         <i class="fas fa-sync-alt"></i>
@@ -106,7 +108,7 @@
             <!-- Overview Tab -->
             <section id="overview" class="page-section active">
                 <h1>System Overview</h1>
-                
+
                 <!-- Key Metrics -->
                 <div class="metrics-grid">
                     <div class="metric-card danger">
@@ -259,7 +261,7 @@
             <!-- Threats Tab -->
             <section id="threats" class="page-section">
                 <h1>Security Threats</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="runThreatScan()">
                         <i class="fas fa-shield-alt"></i> Run Threat Scan
@@ -286,7 +288,7 @@
             <!-- Traffic Tab -->
             <section id="traffic" class="page-section">
                 <h1>Network Traffic Analysis</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="analyzeTrafficData()">
                         <i class="fas fa-chart-bar"></i> Analyze Traffic
@@ -328,7 +330,7 @@
             <!-- Logs Tab -->
             <section id="logs" class="page-section">
                 <h1>System Logs & Analysis</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="loadSystemLogs()">
                         <i class="fas fa-sync-alt"></i> Refresh Logs
@@ -366,7 +368,7 @@
             <!-- Attacks Tab -->
             <section id="attacks" class="page-section">
                 <h1>Attack Simulations & Red Team</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-danger" onclick="startOblivionSimulation()">
                         <i class="fas fa-play-circle"></i> Start Simulation
@@ -703,7 +705,7 @@
             <!-- Configuration Tab -->
             <section id="config" class="page-section">
                 <h1>System Configuration</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="analyzeConfiguration()">
                         <i class="fas fa-search"></i> Analyze Config
@@ -745,7 +747,7 @@
             <!-- Intelligence Tab -->
             <section id="intelligence" class="page-section">
                 <h1>Threat Intelligence</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="refreshThreatIntel()">
                         <i class="fas fa-sync-alt"></i> Refresh Intel
@@ -780,7 +782,7 @@
             <!-- Chat Tab -->
             <section id="chat" class="page-section">
                 <h1>AI Assistant - Multi-Turn Conversation</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-secondary" onclick="getConversationHistory()">
                         <i class="fas fa-history"></i> History
@@ -792,15 +794,18 @@
                         <i class="fas fa-trash"></i> Clear Chat
                     </button>
                 </div>
-                
+
                 <div class="chat-container">
                     <div class="chat-history" id="chat-messages">
                         <div class="chat-message bot">
-                            <p>Hello! I'm your AI Security Assistant. I support multi-turn conversations and can help with security analysis, threat detection, attack planning, and more. How can I help you today?</p>
+                            <p>Hello! I'm your AI Security Assistant. I support multi-turn conversations and can help
+                                with security analysis, threat detection, attack planning, and more. How can I help you
+                                today?</p>
                         </div>
                     </div>
                     <div class="chat-input-area">
-                        <input type="text" id="chat-input" placeholder="Ask me anything about your network security..." onkeypress="handleChatKeypress(event)">
+                        <input type="text" id="chat-input" placeholder="Ask me anything about your network security..."
+                            onkeypress="handleChatKeypress(event)">
                         <button class="btn btn-primary" onclick="sendChatMessage()">
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
@@ -811,7 +816,7 @@
             <!-- Schedules Tab -->
             <section id="schedules" class="page-section">
                 <h1>Automated Schedules</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="createNewSchedule()">
                         <i class="fas fa-plus-circle"></i> Create Schedule
@@ -867,7 +872,7 @@
             <!-- Filters Tab -->
             <section id="filters" class="page-section">
                 <h1>Advanced Filters & Rules</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="createNewFilter()">
                         <i class="fas fa-plus-circle"></i> Create Filter
@@ -900,7 +905,8 @@
                         </div>
                         <div class="form-group">
                             <label>Filter Expression</label>
-                            <textarea id="filter-expression" placeholder="e.g., 192.168.*.* OR 10.0.*.*" rows="3"></textarea>
+                            <textarea id="filter-expression" placeholder="e.g., 192.168.*.* OR 10.0.*.*"
+                                rows="3"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Apply To</label>
@@ -924,7 +930,7 @@
             <!-- Agents Tab -->
             <section id="agents" class="page-section">
                 <h1>Autonomous Agents & Batch Execution</h1>
-                
+
                 <div class="control-bar">
                     <button class="btn btn-primary" onclick="startNewAgent()">
                         <i class="fas fa-plus-circle"></i> Start Agent
@@ -962,7 +968,7 @@
             <!-- Settings Tab -->
             <section id="settings" class="page-section">
                 <h1>Settings & Configuration</h1>
-                
+
                 <div class="settings-sections">
                     <div class="settings-section">
                         <h3>System Settings</h3>
@@ -976,7 +982,7 @@
                         </div>
                         <div class="setting-item">
                             <label>Dark Mode</label>
-                            <input type="checkbox">
+                            <input type="checkbox" id="dark-mode-toggle">
                         </div>
                     </div>
 
@@ -987,12 +993,12 @@
                             <input type="checkbox" checked>
                         </div>
                         <div class="setting-item">
-                            <label>Email Notifications</label>
-                            <input type="checkbox">
+                            <label>Email Address</label>
+                            <input type="email" id="security-email" placeholder="security@example.com">
                         </div>
                         <div class="setting-item">
-                            <label>Slack Integration</label>
-                            <input type="checkbox">
+                            <label>Slack Webhook URL</label>
+                            <input type="url" id="slack-webhook" placeholder="https://hooks.slack.com/services/...">
                         </div>
                     </div>
 
@@ -1007,7 +1013,7 @@
                 </div>
 
                 <div class="settings-actions">
-                    <button class="btn btn-primary">Save Settings</button>
+                    <button class="btn btn-primary" id="save-settings-btn">Save Settings</button>
                     <button class="btn btn-secondary">Reset to Default</button>
                 </div>
             </section>
@@ -1016,4 +1022,5 @@
 
     <script src="/js/main-dashboard.js"></script>
 </body>
+
 </html>

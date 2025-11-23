@@ -48,7 +48,24 @@ class Migration
         $this->createOblivionAttackPlansTable();
         $this->createOblivionPhishingTable();
         $this->createOblivionDisinformationTable();
+        $this->createSettingsTable();
         $this->logger->info("All migrations completed successfully");
+    }
+
+    /**
+     * Create settings table
+     */
+    private function createSettingsTable()
+    {
+        $sql = "
+            CREATE TABLE IF NOT EXISTS system_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ";
+        $this->db->exec($sql);
+        $this->logger->info("Created system_settings table");
     }
 
     /**

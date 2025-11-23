@@ -14,7 +14,7 @@ define('SRC_PATH', BASE_PATH . '/src');
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Load environment variables
-$dotenv = new \Dotenv\Dotenv(BASE_PATH);
+$dotenv = \Dotenv\Dotenv::createImmutable(BASE_PATH);
 if (file_exists(BASE_PATH . '/.env')) {
     $dotenv->load();
 } elseif (file_exists(BASE_PATH . '/.env.example')) {
@@ -30,7 +30,7 @@ $logger = Logger::getInstance();
 $errorHandler = new ErrorHandler();
 
 // Set error handlers with proper logging
-set_error_handler(function($errno, $errstr, $errfile, $errline) use ($logger, $errorHandler) {
+set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($logger, $errorHandler) {
     $logger->error("PHP Error [{errno}]: {message} in {file}:{line}", [
         'errno' => $errno,
         'message' => $errstr,
@@ -40,7 +40,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) use ($logger, $e
     return false;
 });
 
-set_exception_handler(function($exception) use ($errorHandler) {
+set_exception_handler(function ($exception) use ($errorHandler) {
     $errorHandler->handleException($exception, 'Uncaught Exception');
 });
 
@@ -53,11 +53,11 @@ use PfSenseAI\Database\Migration;
 
 try {
     $db = Database::getInstance();
-    
+
     // Ensure all tables exist
     $migration = new Migration($_ENV['DB_PATH'] ?? 'storage/pfsense-ai.db');
     $migration->migrate();
-    
+
     $logger->info("Database initialized successfully");
 } catch (\Exception $e) {
     $logger->error("Database initialization failed: " . $e->getMessage());

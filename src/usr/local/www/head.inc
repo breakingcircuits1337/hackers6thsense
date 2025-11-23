@@ -55,10 +55,10 @@ if (config_get_path('system/webgui/dashboardcolumns') === null) {
 <?php
 // Branding include (with fallback)
 if (@include_once(__DIR__ . '/../etc/inc/branding.inc')) {
-    if (!defined('BRAND_NAME')) define('BRAND_NAME', "BC's PFnonsense");
+    if (!defined('BRAND_NAME')) define('BRAND_NAME', "Hackers6thSense");
     if (!defined('BRAND_LOGO_PATH')) define('BRAND_LOGO_PATH', '/img/bc_logo.svg');
 } else {
-    define('BRAND_NAME', "BC's PFnonsense");
+    define('BRAND_NAME', "Hackers6thSense");
     define('BRAND_LOGO_PATH', '/img/bc_logo.svg');
 }
 ?>

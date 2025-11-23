@@ -14,21 +14,21 @@ function navigateTo(section) {
     document.querySelectorAll('.page-section').forEach(s => {
         s.classList.remove('active');
     });
-    
+
     // Hide all nav items
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    
+
     // Show selected section
     const section_el = document.getElementById(section);
     if (section_el) {
         section_el.classList.add('active');
     }
-    
+
     // Mark nav item as active
     event.target.closest('.nav-item')?.classList.add('active');
-    
+
     // Update page title
     const titles = {
         'overview': 'System Overview',
@@ -45,12 +45,12 @@ function navigateTo(section) {
         'agents': 'Autonomous Agents & Batch Execution',
         'settings': 'Settings'
     };
-    
+
     document.getElementById('page-title').textContent = titles[section] || section;
-    
+
     // Load section data
     loadSectionData(section);
-    
+
     // Close sidebar on mobile
     if (window.innerWidth <= 768) {
         document.querySelector('.sidebar').classList.remove('active');
@@ -67,7 +67,7 @@ function toggleSidebar() {
 
 async function loadSectionData(section) {
     try {
-        switch(section) {
+        switch (section) {
             case 'overview':
                 await loadOverviewData();
                 break;
@@ -112,19 +112,19 @@ async function loadOverviewData() {
         // Load system status
         const statusRes = await fetch(`${API_BASE}/system/status`);
         const statusData = await statusRes.json();
-        
+
         // Load threats
         const threatsRes = await fetch(`${API_BASE}/threats`);
         const threatsData = await threatsRes.json();
-        
+
         const report = threatsData.report;
-        
+
         // Update metric cards
         document.getElementById('critical-count').textContent = report.critical || 0;
         document.getElementById('blocked-count').textContent = report.threats_found || 0;
         document.getElementById('health-score').textContent = '98%';
         document.getElementById('agent-count').textContent = '4';
-        
+
     } catch (error) {
         console.error('Error loading overview data:', error);
     }
@@ -134,10 +134,10 @@ async function loadThreatsData() {
     try {
         const res = await fetch(`${API_BASE}/threats/dashboard`);
         const data = await res.json();
-        
+
         const report = data.threats.report;
         let html = '';
-        
+
         if (report.threats && report.threats.length > 0) {
             report.threats.forEach(threat => {
                 const severityClass = threat.severity.toLowerCase();
@@ -155,9 +155,9 @@ async function loadThreatsData() {
         } else {
             html = '<p style="color: #999;">No active threats detected</p>';
         }
-        
+
         document.getElementById('threats-list').innerHTML = html;
-        
+
     } catch (error) {
         console.error('Error loading threats:', error);
         document.getElementById('threats-list').innerHTML = '<p style="color: red;">Error loading threats data</p>';
@@ -172,13 +172,13 @@ async function loadTrafficData() {
             body: JSON.stringify({ timeframe: 'last_hour' })
         });
         const data = await res.json();
-        
+
         // Update traffic panels
         document.getElementById('total-traffic').textContent = (Math.random() * 10).toFixed(2) + ' GB';
         document.getElementById('inbound-traffic').textContent = (Math.random() * 6).toFixed(2) + ' GB';
         document.getElementById('outbound-traffic').textContent = (Math.random() * 4).toFixed(2) + ' GB';
         document.getElementById('traffic-anomalies').textContent = Math.floor(Math.random() * 5);
-        
+
     } catch (error) {
         console.error('Error loading traffic data:', error);
     }
@@ -188,7 +188,7 @@ async function loadSystemLogs() {
     try {
         const res = await fetch(`${API_BASE}/logs`);
         const data = await res.json();
-        
+
         let html = '';
         if (data.logs && data.logs.length > 0) {
             data.logs.forEach(log => {
@@ -207,12 +207,12 @@ async function loadSystemLogs() {
             html = '<p style="color: #999;">No logs available</p>';
         }
         document.getElementById('logs-list').innerHTML = html;
-        
+
         // Load patterns
         try {
             const patternsRes = await fetch(`${API_BASE}/logs/patterns`);
             const patternsData = await patternsRes.json();
-            
+
             let patternHtml = '';
             if (patternsData.patterns && patternsData.patterns.length > 0) {
                 patternsData.patterns.forEach(pattern => {
@@ -229,7 +229,7 @@ async function loadSystemLogs() {
         } catch (e) {
             console.error('Error loading patterns:', e);
         }
-        
+
     } catch (error) {
         console.error('Error loading logs:', error);
     }
@@ -240,7 +240,7 @@ async function loadAttacksData() {
         // Load attack statistics
         const statsRes = await fetch(`${API_BASE}/oblivion/statistics`);
         const statsData = await statsRes.json();
-        
+
         if (statsData.data) {
             document.getElementById('total-attacks-stat').textContent = statsData.data.total_attacks || 0;
             document.getElementById('success-rate-stat').textContent = (statsData.data.success_rate || 0).toFixed(1) + '%';
@@ -256,7 +256,7 @@ async function loadConfigData() {
     try {
         const res = await fetch(`${API_BASE}/config/rules`);
         const data = await res.json();
-        
+
         let html = '<div style="max-height: 400px; overflow-y: auto;">';
         if (data.rules) {
             data.rules.forEach(rule => {
@@ -269,9 +269,9 @@ async function loadConfigData() {
             });
         }
         html += '</div>';
-        
+
         document.getElementById('firewall-rules').innerHTML = html;
-        
+
     } catch (error) {
         console.error('Error loading config data:', error);
     }
@@ -282,7 +282,7 @@ async function loadLegionData() {
         // Load LEGION defender status
         const statusRes = await fetch(`${API_BASE}/legion/defender/status`);
         const statusData = await statusRes.json();
-        
+
         let statusHtml = `
             <div class="status-item">
                 <span class="status-label">Defender State</span>
@@ -298,11 +298,11 @@ async function loadLegionData() {
             </div>
         `;
         document.getElementById('legion-defender-status').innerHTML = statusHtml;
-        
+
         // Load threat intelligence
         const intelRes = await fetch(`${API_BASE}/legion/threat-intel`);
         const intelData = await intelRes.json();
-        
+
         let intelHtml = '';
         if (intelData.threats && intelData.threats.length > 0) {
             intelData.threats.slice(0, 5).forEach(threat => {
@@ -316,7 +316,7 @@ async function loadLegionData() {
             });
         }
         document.getElementById('legion-intel-feed').innerHTML = intelHtml || '<p>No threat intel available</p>';
-        
+
     } catch (error) {
         console.error('Error loading LEGION data:', error);
     }
@@ -327,7 +327,7 @@ async function loadIntelligenceData() {
         // Load recent threats
         const threatsRes = await fetch(`${API_BASE}/threats`);
         const threatsData = await threatsRes.json();
-        
+
         let html = '';
         if (threatsData.report && threatsData.report.threats) {
             threatsData.report.threats.slice(0, 5).forEach(threat => {
@@ -340,7 +340,7 @@ async function loadIntelligenceData() {
             });
         }
         document.getElementById('recent-threats').innerHTML = html || '<p>No threats</p>';
-        
+
     } catch (error) {
         console.error('Error loading intelligence data:', error);
     }
@@ -350,7 +350,7 @@ async function loadSchedulesData() {
     try {
         const res = await fetch(`${API_BASE}/schedules`);
         const data = await res.json();
-        
+
         let html = '';
         if (data.schedules && data.schedules.length > 0) {
             data.schedules.forEach(schedule => {
@@ -371,7 +371,7 @@ async function loadSchedulesData() {
             });
         }
         document.getElementById('schedules-list').innerHTML = html || '<p>No schedules created</p>';
-        
+
     } catch (error) {
         console.error('Error loading schedules:', error);
     }
@@ -381,7 +381,7 @@ async function loadFiltersData() {
     try {
         const res = await fetch(`${API_BASE}/filters`);
         const data = await res.json();
-        
+
         let html = '';
         if (data.filters && data.filters.length > 0) {
             data.filters.forEach(filter => {
@@ -403,7 +403,7 @@ async function loadFiltersData() {
             });
         }
         document.getElementById('filters-list').innerHTML = html || '<p>No filters created</p>';
-        
+
     } catch (error) {
         console.error('Error loading filters:', error);
     }
@@ -413,7 +413,7 @@ async function loadAgentsData() {
     try {
         const res = await fetch(`${API_BASE}/agents`);
         const data = await res.json();
-        
+
         let html = '';
         if (data.agents && data.agents.length > 0) {
             data.agents.forEach(agent => {
@@ -434,7 +434,7 @@ async function loadAgentsData() {
             });
         }
         document.getElementById('agents-list').innerHTML = html || '<p>No agents available</p>';
-        
+
     } catch (error) {
         console.error('Error loading agents:', error);
     }
@@ -452,10 +452,24 @@ async function runThreatScan() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ deep_scan: true })
         });
-        const data = await res.json();
+
+        // Check if response is OK
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        // Check if response has content
+        const text = await res.text();
+        if (!text) {
+            throw new Error('Empty response from server');
+        }
+
+        // Try to parse JSON
+        const data = JSON.parse(text);
         showNotification('Threat scan completed', 'success');
         await loadThreatsData();
     } catch (error) {
+        console.error('Threat scan error:', error);
         showNotification('Error running threat scan: ' + error.message, 'error');
     }
 }
@@ -517,7 +531,7 @@ async function analyzeLogs() {
 async function searchLogs() {
     const query = prompt('Enter search query:');
     if (!query) return;
-    
+
     showNotification('Searching logs...', 'info');
     try {
         const res = await fetch(`${API_BASE}/logs/search`, {
@@ -570,14 +584,14 @@ async function executeAttack(attackType) {
     if (!confirm(`Are you sure you want to execute ${attackType} attack simulation?`)) {
         return;
     }
-    
+
     showNotification(`Executing ${attackType} attack...`, 'info');
-    
+
     try {
         let endpoint = '';
         let payload = {};
-        
-        switch(attackType) {
+
+        switch (attackType) {
             case 'ddos':
                 endpoint = `${API_BASE}/oblivion/attack/ddos`;
                 payload = {
@@ -626,16 +640,16 @@ async function executeAttack(attackType) {
                 };
                 break;
         }
-        
+
         const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        
+
         const data = await res.json();
         showNotification(`${attackType} attack executed successfully`, 'success');
-        
+
     } catch (error) {
         showNotification(`Error executing ${attackType}: ` + error.message, 'error');
     }
@@ -667,7 +681,7 @@ async function generateDisinformation() {
     if (!confirm('Generate disinformation content for social engineering test?')) {
         return;
     }
-    
+
     showNotification('Generating disinformation content...', 'info');
     try {
         const res = await fetch(`${API_BASE}/oblivion/disinformation/generate`, {
@@ -721,9 +735,23 @@ async function analyzeConfiguration() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({})
         });
-        const data = await res.json();
+
+        // Check if response is OK
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        // Check if response has content
+        const text = await res.text();
+        if (!text) {
+            throw new Error('Empty response from server');
+        }
+
+        // Try to parse JSON
+        const data = JSON.parse(text);
         showNotification('Configuration analysis complete', 'success');
     } catch (error) {
+        console.error('Config analysis error:', error);
         showNotification('Error analyzing config: ' + error.message, 'error');
     }
 }
@@ -747,7 +775,7 @@ async function startLegionDefender() {
     if (!confirm('Start LEGION Defender? This may take a few moments.')) {
         return;
     }
-    
+
     showNotification('Starting LEGION Defender...', 'info');
     try {
         const res = await fetch(`${API_BASE}/legion/defender/start`, {
@@ -827,9 +855,9 @@ async function exportIntelligence() {
 async function sendChatMessage() {
     const input = document.getElementById('chat-input');
     const message = input.value.trim();
-    
+
     if (!message) return;
-    
+
     // Add user message to chat
     const chatMessages = document.getElementById('chat-messages');
     const userMsg = document.createElement('div');
@@ -838,7 +866,7 @@ async function sendChatMessage() {
     chatMessages.appendChild(userMsg);
     input.value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    
+
     try {
         // Send to AI (multi-turn support)
         const res = await fetch(`${API_BASE}/chat/multi-turn`, {
@@ -850,17 +878,17 @@ async function sendChatMessage() {
                 enhanced: true
             })
         });
-        
+
         const data = await res.json();
         const aiResponse = data.response?.response || data.response || 'I could not process your request.';
-        
+
         // Add AI response to chat
         const botMsg = document.createElement('div');
         botMsg.className = 'chat-message bot';
         botMsg.innerHTML = `<p>${escapeHtml(aiResponse)}</p>`;
         chatMessages.appendChild(botMsg);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        
+
     } catch (error) {
         const errorMsg = document.createElement('div');
         errorMsg.className = 'chat-message bot';
@@ -903,7 +931,7 @@ async function clearChatHistory() {
     if (!confirm('Clear all chat history?')) {
         return;
     }
-    
+
     showNotification('Clearing chat history...', 'info');
     try {
         const res = await fetch(`${API_BASE}/chat/clear`, {
@@ -939,12 +967,12 @@ async function saveSchedule() {
     const name = document.getElementById('schedule-name').value;
     const taskType = document.getElementById('schedule-task').value;
     const frequency = document.getElementById('schedule-frequency').value;
-    
+
     if (!name || !taskType || !frequency) {
         showNotification('Please fill all fields', 'error');
         return;
     }
-    
+
     showNotification('Creating schedule...', 'info');
     try {
         const res = await fetch(`${API_BASE}/schedules`, {
@@ -963,7 +991,7 @@ async function saveSchedule() {
 
 async function deleteSchedule(id) {
     if (!confirm('Delete this schedule?')) return;
-    
+
     try {
         const res = await fetch(`${API_BASE}/schedules/${id}`, { method: 'DELETE' });
         showNotification('Schedule deleted', 'success');
@@ -991,7 +1019,7 @@ async function viewExecutionHistory() {
 
 async function executeScheduledJobs() {
     if (!confirm('Execute all scheduled jobs now?')) return;
-    
+
     showNotification('Executing scheduled jobs...', 'info');
     try {
         const res = await fetch(`${API_BASE}/schedules/execute`, {
@@ -1035,12 +1063,12 @@ async function saveFilter() {
     const type = document.getElementById('filter-type').value;
     const expression = document.getElementById('filter-expression').value;
     const applyTo = document.getElementById('filter-apply-to').value;
-    
+
     if (!name || !type || !expression || !applyTo) {
         showNotification('Please fill all fields', 'error');
         return;
     }
-    
+
     showNotification('Creating filter...', 'info');
     try {
         const res = await fetch(`${API_BASE}/filters`, {
@@ -1074,7 +1102,7 @@ async function applyFilter(id) {
 
 async function deleteFilter(id) {
     if (!confirm('Delete this filter?')) return;
-    
+
     try {
         const res = await fetch(`${API_BASE}/filters/${id}`, { method: 'DELETE' });
         showNotification('Filter deleted', 'success');
@@ -1152,18 +1180,18 @@ async function executeAgent(id) {
 
 async function executeBatchAgents() {
     const selectedAgents = document.querySelectorAll('.agent-checkbox:checked');
-    
+
     if (selectedAgents.length === 0) {
         showNotification('Please select agents for batch execution', 'warning');
         return;
     }
-    
+
     const agentIds = Array.from(selectedAgents).map(cb => cb.dataset.agentId);
-    
+
     if (!confirm(`Execute ${agentIds.length} agents in batch?`)) {
         return;
     }
-    
+
     showNotification('Executing batch agents...', 'info');
     try {
         const res = await fetch(`${API_BASE}/agents/batch/execute`, {
@@ -1205,7 +1233,7 @@ async function viewAgentResults(id) {
 
 async function stopAgent(id) {
     if (!confirm('Stop this agent?')) return;
-    
+
     try {
         const res = await fetch(`${API_BASE}/agents/${id}/stop`, {
             method: 'POST',
@@ -1253,6 +1281,31 @@ async function getActiveAgents() {
 // Utility Functions
 // ============================================
 
+/**
+ * Safely parse JSON response from fetch
+ * Handles empty responses and non-OK status codes
+ */
+async function safeJsonResponse(response) {
+    // Check if response is OK
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Check if response has content
+    const text = await response.text();
+    if (!text) {
+        throw new Error('Empty response from server');
+    }
+
+    // Try to parse JSON
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        console.error('Failed to parse JSON:', text);
+        throw new Error('Invalid JSON response from server');
+    }
+}
+
 function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
@@ -1271,7 +1324,7 @@ function showNotification(message, type = 'info') {
     `;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
         setTimeout(() => notification.remove(), 300);
@@ -1285,7 +1338,7 @@ function escapeHtml(text) {
 }
 
 function getSeverityColor(severity) {
-    switch(severity.toLowerCase()) {
+    switch (severity.toLowerCase()) {
         case 'critical': return '#d32f2f';
         case 'high': return '#f57c00';
         case 'medium': return '#fbc02d';
@@ -1301,7 +1354,10 @@ function getSeverityColor(severity) {
 document.addEventListener('DOMContentLoaded', () => {
     // Load overview data by default
     loadSectionData('overview');
-    
+
+    // Load saved settings
+    loadSettings();
+
     // Set up refresh button
     document.querySelectorAll('.refresh-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1309,7 +1365,98 @@ document.addEventListener('DOMContentLoaded', () => {
             loadSectionData(section);
         });
     });
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    }
+
+    // Save Settings Button
+    const saveBtn = document.getElementById('save-settings-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveSettings);
+    }
+
+    // Notification Bell
+    const notificationBell = document.getElementById('notification-bell');
+    if (notificationBell) {
+        notificationBell.addEventListener('click', () => {
+            showNotification('No new notifications', 'info');
+            // Future: Open a notifications panel/modal
+        });
+    }
 });
+
+// ============================================
+// Settings Management
+// ============================================
+
+function loadSettings() {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+
+    // Apply Dark Mode
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        const toggle = document.getElementById('dark-mode-toggle');
+        if (toggle) toggle.checked = true;
+    }
+
+    // Fetch settings from API
+    fetch(`${API_BASE}/system/settings`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success' && data.settings) {
+                const emailInput = document.getElementById('security-email');
+                const slackInput = document.getElementById('slack-webhook');
+
+                if (emailInput && data.settings.security_email) {
+                    emailInput.value = data.settings.security_email;
+                }
+                if (slackInput && data.settings.slack_webhook) {
+                    slackInput.value = data.settings.slack_webhook;
+                }
+            }
+        })
+        .catch(err => console.error('Failed to load settings:', err));
+}
+
+function saveSettings() {
+    const darkMode = document.getElementById('dark-mode-toggle')?.checked;
+    const securityEmail = document.getElementById('security-email')?.value;
+    const slackWebhook = document.getElementById('slack-webhook')?.value;
+
+    // Save Dark Mode to localStorage
+    localStorage.setItem('darkMode', darkMode);
+
+    // Save notification settings to API
+    const settings = {};
+    if (securityEmail) settings.security_email = securityEmail;
+    if (slackWebhook) settings.slack_webhook = slackWebhook;
+
+    fetch(`${API_BASE}/system/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showNotification('Settings saved successfully', 'success');
+            } else {
+                showNotification('Failed to save settings', 'error');
+            }
+        })
+        .catch(err => {
+            showNotification('Error saving settings: ' + err.message, 'error');
+        });
+}
 
 // Add CSS animations
 const style = document.createElement('style');

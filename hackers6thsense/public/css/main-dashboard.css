@@ -1570,3 +1570,73 @@ canvas {
         width: 100%;
     }
 }
+/* ============================================
+   Dark Mode
+   ============================================ */
+
+body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e0e0e0;
+}
+
+body.dark-mode .main-content {
+    background: #1a1a2e;
+}
+
+body.dark-mode .panel,
+body.dark-mode .metric-card,
+body.dark-mode .chart-panel,
+body.dark-mode .traffic-panel,
+body.dark-mode .traffic-details,
+body.dark-mode .attack-card,
+body.dark-mode .intel-panel,
+body.dark-mode .agent-card,
+body.dark-mode .filter-group select,
+body.dark-mode .search-bar {
+    background: #16213e;
+    color: #e0e0e0;
+    border-color: #2a2a40;
+}
+
+body.dark-mode .header {
+    background: #16213e;
+    border-bottom: 1px solid #2a2a40;
+}
+
+body.dark-mode .header-icons .icon-btn,
+body.dark-mode #page-title,
+body.dark-mode .user-name,
+body.dark-mode .metric-value,
+body.dark-mode .status-label,
+body.dark-mode .threat-type,
+body.dark-mode .provider-name,
+body.dark-mode .chart-panel h3,
+body.dark-mode .page-section h1 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .search-bar input {
+    color: #e0e0e0;
+}
+
+body.dark-mode .status-item,
+body.dark-mode .provider-item,
+body.dark-mode .log-entry,
+body.dark-mode .config-tab h3 {
+    border-color: #2a2a40;
+}
+
+body.dark-mode .btn-secondary {
+    background: #16213e;
+    color: #e0e0e0;
+    border-color: #2a2a40;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: #2a2a40;
+}
+
+body.dark-mode .intel-item,
+body.dark-mode .agent-card {
+    background: #0f3460 !important;
+}
